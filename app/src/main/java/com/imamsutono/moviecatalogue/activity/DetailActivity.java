@@ -34,22 +34,21 @@ public class DetailActivity extends AppCompatActivity {
     private ServiceInterface service = ServiceGenerator.createService(ServiceInterface.class);
     private Call<Movie> callMovie;
     private Call<TvShow> callTvShow;
-    String type;
 
-    ProgressBar progressBar;
-    ImageView imgPoster;
-    TextView tvTitle;
-    TextView tvYear;
-    TextView tvVoters;
-    TextView tvScore;
-    TextView tvDescription;
+    private ProgressBar progressBar;
+    private ImageView imgPoster;
+    private TextView tvTitle;
+    private TextView tvYear;
+    private TextView tvVoters;
+    private TextView tvScore;
+    private TextView tvDescription;
 
-    String poster = "";
-    String title = "";
-    String year = "";
-    String voters = "";
-    String score = "";
-    String description = "";
+    private String poster = "";
+    private String title = "";
+    private String year = "";
+    private String voters = "";
+    private String score = "";
+    private String description = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +63,14 @@ public class DetailActivity extends AppCompatActivity {
         tvScore = findViewById(R.id.txt_score_detail);
         tvDescription = findViewById(R.id.txt_description_detail);
 
-        type = getIntent().getStringExtra(EXTRA_TYPE);
-
+        String type = getIntent().getStringExtra(EXTRA_TYPE);
         Bundle extras = getIntent().getExtras();
-        int id = extras.getInt(EXTRA_ID, 2);
-        callMovie = service.getMovieDetail(id);
-        callTvShow = service.getTvShowDetai(id);
+
+        if (extras != null) {
+            int id = extras.getInt(EXTRA_ID, 2);
+            callMovie = service.getMovieDetail(id);
+            callTvShow = service.getTvShowDetai(id);
+        }
 
         if (savedInstanceState == null) {
 
@@ -113,14 +114,15 @@ public class DetailActivity extends AppCompatActivity {
             public void onResponse(Call<Movie> call, Response<Movie> response) {
                 movie = response.body();
 
-                poster += movie.getPoster();
-                title = movie.getTitle();
-                year = movie.getYear();
-                voters = movie.getVoters();
-                score = movie.getScore() + "%";
-                description = movie.getDescription();
-
-                showDetail();
+                if (movie != null) {
+                    poster += movie.getPoster();
+                    title = movie.getTitle();
+                    year = movie.getYear();
+                    voters = movie.getVoters();
+                    score = movie.getScore() + "%";
+                    description = movie.getDescription();
+                    showDetail();
+                }
             }
 
             @Override
@@ -136,14 +138,15 @@ public class DetailActivity extends AppCompatActivity {
             public void onResponse(Call<TvShow> call, Response<TvShow> response) {
                 tvShow = response.body();
 
-                poster += tvShow.getPoster();
-                title = tvShow.getTitle();
-                year = tvShow.getYear();
-                voters = tvShow.getVoters();
-                score = tvShow.getScore() + "%";
-                description = tvShow.getDescription();
-
-                showDetail();
+                if (tvShow != null) {
+                    poster += tvShow.getPoster();
+                    title = tvShow.getTitle();
+                    year = tvShow.getYear();
+                    voters = tvShow.getVoters();
+                    score = tvShow.getScore() + "%";
+                    description = tvShow.getDescription();
+                    showDetail();
+                }
             }
 
             @Override
