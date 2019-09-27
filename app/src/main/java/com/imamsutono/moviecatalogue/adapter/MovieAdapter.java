@@ -1,5 +1,6 @@
 package com.imamsutono.moviecatalogue.adapter;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
@@ -20,22 +21,48 @@ import com.imamsutono.moviecatalogue.R;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
-
     private List<Movie> movies;
     private OnItemClickCallback onItemClickCallback;
+    private Activity activity;
 
     public MovieAdapter(List<Movie> movies) {
         this.movies = movies;
     }
 
-    public void setData(List<Movie> items) {
-        movies.clear();
-        movies.addAll(items);
-        notifyDataSetChanged();
+    public MovieAdapter(Activity activity) {
+        this.activity = activity;
     }
 
     public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback;
+    }
+
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(List<Movie> movies) {
+        if (movies.size() > 0) {
+            this.movies.clear();
+        }
+        this.movies.addAll(movies);
+        notifyDataSetChanged();
+    }
+
+    public void addItem(Movie movie) {
+        this.movies.add(movie);
+        notifyItemInserted(movies.size() - 1);
+    }
+
+    public void updateItem(int position, Movie movie) {
+        this.movies.set(position, movie);
+        notifyItemChanged(position, movie);
+    }
+
+    public void removeItem(int position) {
+        this.movies.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, movies.size());
     }
 
     @NonNull
