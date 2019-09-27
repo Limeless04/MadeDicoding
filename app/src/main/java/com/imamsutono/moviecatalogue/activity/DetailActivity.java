@@ -241,9 +241,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 if (result > 0) {
                     movie.setId((int) result);
                     setResult(RESULT_ADD, intent);
-//                    btnFavorite.setImageDrawable(
-//                            ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_favorite_black_24dp)
-//                    );
                     setBtnFavoriteIcon();
                     message = "Berhasil ditambahkan ke favorit";
                 } else {
@@ -256,9 +253,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     Intent delIntent = new Intent();
                     delIntent.putExtra(EXTRA_POSITION, position);
                     setResult(RESULT_DELETE, delIntent);
-//                    btnFavorite.setImageDrawable(
-//                            ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_favorite_border_black_24dp)
-//                    );
                     setBtnFavoriteIcon();
                     message = "Berhasil dihapus dari favorit";
                 } else {
