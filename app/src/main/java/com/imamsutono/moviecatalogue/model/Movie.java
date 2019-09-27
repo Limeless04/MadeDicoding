@@ -109,6 +109,9 @@ public class Movie implements Parcelable {
         parcel.writeString(this.description);
     }
 
+    public Movie() {
+    }
+
     private Movie(Parcel in) {
         this.poster = in.readString();
         this.title = in.readString();
