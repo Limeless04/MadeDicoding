@@ -12,6 +12,7 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="tab_text_1">Film</string>
     <string name="tab_text_2">Acara TV</string>
+    <string name="tab_text_3">Favorit</string>
     <string name="hello_blank_fragment">Halo</string>
     <string name="voters">Pemilih</string>
 </resources>

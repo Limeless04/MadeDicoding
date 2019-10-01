@@ -14,15 +14,15 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         android:allowBackup="true">
-        <activity android:name=".ui.main.MainActivity" />
-        <activity android:name=".activity.DetailActivity" />
-        <activity android:name=".activity.HomeActivity">
+        <activity android:name=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.DetailActivity" />
+        <activity android:name=".activity.HomeActivity" />
     </application>
 
 </manifest>
