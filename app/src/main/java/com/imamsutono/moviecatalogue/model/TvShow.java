@@ -109,6 +109,8 @@ public class TvShow implements Parcelable {
         parcel.writeString(this.description);
     }
 
+    public TvShow() {}
+
     private TvShow(Parcel in) {
         this.poster = in.readString();
         this.title = in.readString();

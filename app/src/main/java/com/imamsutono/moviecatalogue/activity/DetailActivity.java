@@ -2,7 +2,9 @@ package com.imamsutono.moviecatalogue.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -15,6 +17,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.imamsutono.moviecatalogue.db.MovieHelper;
+import com.imamsutono.moviecatalogue.db.TvShowHelper;
 import com.imamsutono.moviecatalogue.service.ServiceInterface;
 import com.imamsutono.moviecatalogue.service.ServiceGenerator;
 import com.imamsutono.moviecatalogue.model.Movie;
@@ -25,16 +30,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String EXTRA_ID = "extra_id";
     public static final String EXTRA_TYPE = "extra_data";
+    public static final String EXTRA_MOVIE = "extra_movie";
+    public static final String EXTRA_TVSHOW = "extra_tvshow";
+    public static final String EXTRA_POSITION = "extra_position";
     private Movie movie;
     private TvShow tvShow;
+    private MovieHelper movieHelper;
+    private TvShowHelper tvShowHelper;
+    private String type;
+    private int position;
 
     private ServiceInterface service = ServiceGenerator.createService(ServiceInterface.class);
     private Call<Movie> callMovie;
     private Call<TvShow> callTvShow;
-    String type;
 
     ProgressBar progressBar;
     ImageView imgPoster;
@@ -43,6 +54,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView tvVoters;
     TextView tvScore;
     TextView tvDescription;
+    FloatingActionButton btnFavorite;
 
     String poster = "";
     String title = "";
@@ -63,16 +75,35 @@ public class DetailActivity extends AppCompatActivity {
         tvVoters = findViewById(R.id.txt_voters_detail);
         tvScore = findViewById(R.id.txt_score_detail);
         tvDescription = findViewById(R.id.txt_description_detail);
+        btnFavorite = findViewById(R.id.btn_favorite);
 
+        btnFavorite.setOnClickListener(this);
         type = getIntent().getStringExtra(EXTRA_TYPE);
-
         Bundle extras = getIntent().getExtras();
-        int id = extras.getInt(EXTRA_ID, 2);
-        callMovie = service.getMovieDetail(id);
-        callTvShow = service.getTvShowDetai(id);
 
-        if (savedInstanceState == null) {
+        if (extras != null) {
+            int id = extras.getInt(EXTRA_ID, 2);
+            callMovie = service.getMovieDetail(id);
+            callTvShow = service.getTvShowDetai(id);
+        }
 
+        if (type != null) {
+            if (type.equals("movie")) {
+                movieHelper = MovieHelper.getInstance(getApplicationContext());
+                movieHelper.open();
+                movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
+            } else {
+                tvShowHelper = TvShowHelper.getInstance(getApplicationContext());
+                tvShowHelper.open();
+                tvShow = getIntent().getParcelableExtra(EXTRA_TVSHOW);
+            }
+        }
+
+        if (movie != null || tvShow != null) {
+            position = getIntent().getIntExtra(EXTRA_POSITION, 0);
+        }
+
+        if (savedInstanceState == null && type != null) {
             if (type.equals("movie")) {
                 getMovieDetail();
             } else {
@@ -107,10 +138,21 @@ public class DetailActivity extends AppCompatActivity {
         showDetail();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (type.equals("movie")) {
+            movieHelper.close();
+        } else {
+            tvShowHelper.close();
+        }
+    }
+
     private void getMovieDetail() {
         callMovie.enqueue(new Callback<Movie>() {
             @Override
-            public void onResponse(Call<Movie> call, Response<Movie> response) {
+            public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
                 movie = response.body();
 
                 poster += movie.getPoster();
@@ -124,7 +166,7 @@ public class DetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Movie> call, Throwable t) {
+            public void onFailure(@NonNull Call<Movie> call, @NonNull Throwable t) {
                 Toast.makeText(DetailActivity.this, "Gagal mengambil data detail film", Toast.LENGTH_SHORT).show();
             }
         });
@@ -133,7 +175,7 @@ public class DetailActivity extends AppCompatActivity {
     private void getTvShowDetail() {
         callTvShow.enqueue(new Callback<TvShow>() {
             @Override
-            public void onResponse(Call<TvShow> call, Response<TvShow> response) {
+            public void onResponse(@NonNull Call<TvShow> call, @NonNull Response<TvShow> response) {
                 tvShow = response.body();
 
                 poster += tvShow.getPoster();
@@ -147,7 +189,7 @@ public class DetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<TvShow> call, Throwable t) {
+            public void onFailure(@NonNull Call<TvShow> call, @NonNull Throwable t) {
                 Toast.makeText(DetailActivity.this, "Gagal mengambil data detail pertunjukan TV", Toast.LENGTH_SHORT).show();
             }
         });
@@ -167,9 +209,104 @@ public class DetailActivity extends AppCompatActivity {
         tvDescription.setText(description);
 
         hideLoading();
+        setBtnFavoriteIcon();
     }
 
     private void hideLoading() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    private void setBtnFavoriteIcon() {
+        boolean isFavorited;
+        int icon;
+
+        if (type.equals("movie")) {
+            isFavorited = movieHelper.getMovie(title, year) > 0;
+        } else {
+            isFavorited = tvShowHelper.getTvShow(title, year) > 0;
+        }
+
+        if (isFavorited) {
+            icon = R.drawable.ic_favorite_black_24dp;
+        } else {
+            icon = R.drawable.ic_favorite_border_black_24dp;
+        }
+
+        btnFavorite.setImageDrawable(
+                ContextCompat.getDrawable(getApplicationContext(), icon)
+        );
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.btn_favorite) {
+            Intent intent = new Intent();
+            boolean isFavorited;
+
+            if (type.equals("movie")) {
+                movie.setPoster(poster);
+                movie.setTitle(title);
+                movie.setYear(year);
+                movie.setLanguage("en");
+
+                intent.putExtra(EXTRA_MOVIE, movie);
+                isFavorited = movieHelper.getMovie(title, year) > 0;
+            } else {
+                tvShow.setPoster(poster);
+                tvShow.setTitle(title);
+                tvShow.setYear(year);
+                tvShow.setLanguage("en");
+
+                intent.putExtra(EXTRA_TVSHOW, tvShow);
+                isFavorited = tvShowHelper.getTvShow(title, year) > 0;
+            }
+
+            intent.putExtra(EXTRA_POSITION, position);
+            String message;
+
+            if (!isFavorited) {
+                long result;
+
+                if (type.equals("movie")) {
+                    result = movieHelper.insertMovie(movie);
+                } else {
+                    result = tvShowHelper.insertTvShow(tvShow);
+                }
+
+                if (result > 0) {
+                    if (type.equals("movie")) {
+                        movie.setId((int) result);
+                    } else {
+                        tvShow.setId((int) result);
+                    }
+
+//                    setResult(RESULT_ADD, intent);
+                    setBtnFavoriteIcon();
+                    message = "Berhasil ditambahkan ke favorit";
+                } else {
+                    message = "Gagal menambahkan favorit";
+                }
+            } else {
+                long delete;
+
+                if (type.equals("movie")) {
+                    delete = movieHelper.deleteMovie(title, year);
+                } else {
+                    delete = tvShowHelper.deleteTvShow(title, year);
+                }
+
+                if (delete > 0) {
+                    Intent delIntent = new Intent();
+                    delIntent.putExtra(EXTRA_POSITION, position);
+//                    setResult(RESULT_DELETE, delIntent);
+                    setBtnFavoriteIcon();
+                    message = "Berhasil dihapus dari favorit";
+                } else {
+                    message = "Gagal menghapus favorit";
+                }
+            }
+
+            Toast.makeText(DetailActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 }
