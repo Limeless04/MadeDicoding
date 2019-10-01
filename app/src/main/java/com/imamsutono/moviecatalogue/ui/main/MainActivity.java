@@ -17,7 +17,6 @@ import static com.imamsutono.moviecatalogue.fragment.MainFragment.ARG_OBJECT;
 
 public class MainActivity extends AppCompatActivity {
 
-    final Fragment mainFragment = new MainFragment();
     final Fragment favFragment = new FavoriteFragment();
     final FragmentManager fm = getSupportFragmentManager();
 
@@ -34,11 +33,12 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Fragment mainFragment = new MainFragment();
             Bundle args = new Bundle();
 
             switch (menuItem.getItemId()) {
                 case R.id.navigation_movie:
-                    args.putString(ARG_OBJECT, "movie");
+                    args.putString(ARG_OBJECT, "movies");
                     mainFragment.setArguments(args);
                     fm.beginTransaction().replace(R.id.main_content, mainFragment).commit();
                     return true;
