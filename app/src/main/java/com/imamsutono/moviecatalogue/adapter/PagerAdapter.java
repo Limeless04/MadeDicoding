@@ -2,12 +2,13 @@ package com.imamsutono.moviecatalogue.adapter;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.imamsutono.moviecatalogue.activity.HomeActivity;
 import com.imamsutono.moviecatalogue.fragment.MainFragment;
+import com.imamsutono.moviecatalogue.ui.favoritelist.FavoriteListFragment;
 
 public class PagerAdapter extends FragmentPagerAdapter {
 
@@ -15,9 +16,10 @@ public class PagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = new MainFragment();
+        Fragment fragment = new FavoriteListFragment();
         Bundle args = new Bundle();
 
         switch (position) {

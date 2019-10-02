@@ -17,15 +17,26 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.imamsutono.moviecatalogue.R;
 import com.imamsutono.moviecatalogue.model.TvShow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.ViewHolder> {
 
-    private List<TvShow> tvShows;
+    private List<TvShow> tvShows = new ArrayList<>();
     private OnItemClickCallback onItemClickCallback;
+
+    public TvShowAdapter() {}
 
     public TvShowAdapter(List<TvShow> tvShows) {
         this.tvShows = tvShows;
+    }
+
+    public void setData(List<TvShow> items) {
+        if (items.size() > 0) {
+            tvShows.clear();
+        }
+        tvShows.addAll(items);
+        notifyDataSetChanged();
     }
 
     public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {

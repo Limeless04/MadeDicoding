@@ -15,4 +15,5 @@
     <string name="tab_text_3">Favorit</string>
     <string name="hello_blank_fragment">Halo</string>
     <string name="voters">Pemilih</string>
+    <string name="empty_data">Tidak ada data</string>
 </resources>

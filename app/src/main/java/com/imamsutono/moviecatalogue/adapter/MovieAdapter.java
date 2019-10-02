@@ -17,19 +17,28 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.imamsutono.moviecatalogue.model.Movie;
 import com.imamsutono.moviecatalogue.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
-    private List<Movie> movies;
+    private List<Movie> movies = new ArrayList<>();
     private OnItemClickCallback onItemClickCallback;
+
+    public MovieAdapter() {}
 
     public MovieAdapter(List<Movie> movies) {
         this.movies = movies;
     }
 
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
     public void setData(List<Movie> items) {
-        movies.clear();
+        if (items.size() > 0) {
+            movies.clear();
+        }
         movies.addAll(items);
         notifyDataSetChanged();
     }
