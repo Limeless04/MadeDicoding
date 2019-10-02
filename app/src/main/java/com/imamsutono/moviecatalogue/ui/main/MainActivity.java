@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     final Fragment favFragment = new FavoriteFragment();
     final FragmentManager fm = getSupportFragmentManager();
+    private MainViewModel mainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +29,12 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener);
-        navView.setSelectedItemId(R.id.navigation_movie);
+
+        if (savedInstanceState == null) {
+            navView.setSelectedItemId(R.id.navigation_movie);
+        }
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mainViewModel.init();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {

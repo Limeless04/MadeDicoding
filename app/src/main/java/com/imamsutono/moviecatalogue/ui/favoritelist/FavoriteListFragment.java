@@ -1,7 +1,6 @@
 package com.imamsutono.moviecatalogue.ui.favoritelist;
 
-import androidx.lifecycle.ViewModelProviders;
-
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -23,6 +22,7 @@ import com.imamsutono.moviecatalogue.db.MovieHelper;
 import com.imamsutono.moviecatalogue.db.TvShowHelper;
 import com.imamsutono.moviecatalogue.model.Movie;
 import com.imamsutono.moviecatalogue.model.TvShow;
+import com.imamsutono.moviecatalogue.ui.favoritedetail.DetailFavoriteActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -34,14 +34,12 @@ public class FavoriteListFragment extends Fragment implements LoadFavoritesCallb
 
     private RecyclerView rvFavorite;
     private ProgressBar progressBar;
-    private FavoriteListViewModel mViewModel;
     private MovieHelper movieHelper;
     private TvShowHelper tvShowHelper;
     private MovieAdapter movieAdapter;
     private TvShowAdapter tvShowAdapter;
 
     private final String TYPE_MOVIES = "movies";
-    private static final String EXTRA_STATE = "EXTRA_STATE";
     private String type;
 
     @Override
@@ -52,9 +50,6 @@ public class FavoriteListFragment extends Fragment implements LoadFavoritesCallb
         rvFavorite = view.findViewById(R.id.rv_fav_list);
         rvFavorite.setHasFixedSize(true);
 
-        mViewModel = ViewModelProviders.of(this).get(FavoriteListViewModel.class);
-        mViewModel.init();
-
         Bundle args = getArguments();
 
         if (args != null) {
@@ -64,43 +59,69 @@ public class FavoriteListFragment extends Fragment implements LoadFavoritesCallb
                 if (type.equals(TYPE_MOVIES)) {
                     movieAdapter = new MovieAdapter();
                     rvFavorite.setAdapter(movieAdapter);
+
+                    movieAdapter.setOnItemClickCallback(new MovieAdapter.OnItemClickCallback() {
+                        @Override
+                        public void onItemClicked(Movie data) {
+                            openMovieDetail(data);
+                        }
+                    });
                 } else {
                     tvShowAdapter = new TvShowAdapter();
                     rvFavorite.setAdapter(tvShowAdapter);
+
+                    tvShowAdapter.setOnItemClickCallback(new TvShowAdapter.OnItemClickCallback() {
+                        @Override
+                        public void onItemClicked(TvShow data) {
+                            openTvShowDetail(data);
+                        }
+                    });
                 }
                 openDatabase();
             }
         }
 
         if (type != null) {
-            if (savedInstanceState == null) {
-                if (type.equals(TYPE_MOVIES)) {
-                    new LoadMoviesAsync(movieHelper, this).execute();
-                } else {
-                    new LoadTvShowsAsync(tvShowHelper, this).execute();
-                }
+            if (type.equals(TYPE_MOVIES)) {
+                new LoadMoviesAsync(movieHelper, this).execute();
             } else {
-                if (type.equals(TYPE_MOVIES)) {
-                    List<Movie> movies = savedInstanceState.getParcelableArrayList(EXTRA_STATE);
-
-                    if (movies != null)
-                        movieAdapter.setData(movies);
-                } else {
-                    List<TvShow> tvShows = savedInstanceState.getParcelableArrayList(EXTRA_STATE);
-
-                    if (tvShows != null)
-                        tvShowAdapter.setData(tvShows);
-                }
+                new LoadTvShowsAsync(tvShowHelper, this).execute();
             }
         }
 
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(FavoriteListViewModel.class);
+    private void openMovieDetail(Movie data) {
+        Movie movie = new Movie();
+        movie.setId(data.getId());
+        movie.setPoster(data.getPoster());
+        movie.setTitle(data.getTitle());
+        movie.setYear(data.getYear());
+        movie.setVoters(data.getVoters());
+        movie.setScore(data.getScore());
+        movie.setDescription(data.getDescription());
+
+        Intent intent = new Intent(getContext(), DetailFavoriteActivity.class);
+        intent.putExtra(DetailFavoriteActivity.EXTRA_FAVORITE, movie);
+        intent.putExtra(DetailFavoriteActivity.EXTRA_TYPE, "movie");
+        startActivity(intent);
+    }
+
+    private void openTvShowDetail(TvShow data) {
+        TvShow tvShow = new TvShow();
+        tvShow.setId(data.getId());
+        tvShow.setPoster(data.getPoster());
+        tvShow.setTitle(data.getTitle());
+        tvShow.setYear(data.getYear());
+        tvShow.setVoters(data.getVoters());
+        tvShow.setScore(data.getScore());
+        tvShow.setDescription(data.getDescription());
+
+        Intent intent = new Intent(getContext(), DetailFavoriteActivity.class);
+        intent.putExtra(DetailFavoriteActivity.EXTRA_FAVORITE, tvShow);
+        intent.putExtra(DetailFavoriteActivity.EXTRA_TYPE, "tv_show");
+        startActivity(intent);
     }
 
     private void openDatabase() {

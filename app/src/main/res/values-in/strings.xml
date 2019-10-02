@@ -16,4 +16,5 @@
     <string name="hello_blank_fragment">Halo</string>
     <string name="voters">Pemilih</string>
     <string name="empty_data">Tidak ada data</string>
+    <string name="poster_url">https://image.tmdb.org/t/p/original</string>
 </resources>
