@@ -55,7 +55,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.ViewHolder
         TvShow tvShow = tvShows.get(position);
 
         Glide.with(holder.itemView.getContext())
-                .load(tvShow.getPoster())
+                .load("https://image.tmdb.org/t/p/original" + tvShow.getPoster())
                 .placeholder(new ColorDrawable(Color.GRAY))
                 .error(new ColorDrawable(Color.GRAY))
                 .transform(new CenterCrop(), new RoundedCorners(16))

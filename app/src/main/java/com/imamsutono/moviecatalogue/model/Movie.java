@@ -39,7 +39,7 @@ public class Movie implements Parcelable {
     }
 
     public String getPoster() {
-        return "https://image.tmdb.org/t/p/original" + poster;
+        return poster;
     }
 
     public void setPoster(String poster) {

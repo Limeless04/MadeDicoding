@@ -1,6 +1,7 @@
 package com.imamsutono.moviecatalogue.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -68,6 +70,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         progressBar = findViewById(R.id.loading_detail);
         imgPoster = findViewById(R.id.img_poster_detail);
         tvTitle = findViewById(R.id.txt_title_detail);
@@ -110,6 +117,15 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 getTvShowDetail();
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -197,7 +213,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private void showDetail() {
         Glide.with(this)
-                .load(poster)
+                .load("https://image.tmdb.org/t/p/original" + poster)
                 .placeholder(new ColorDrawable(Color.GRAY))
                 .error(new ColorDrawable(Color.GRAY))
                 .transform(new CenterCrop(), new RoundedCorners(16))

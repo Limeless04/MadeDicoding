@@ -92,7 +92,7 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private Observer<MovieResponse> getMovie = new Observer<MovieResponse>() {
+    public Observer<MovieResponse> getMovie = new Observer<MovieResponse>() {
         @Override
         public void onChanged(MovieResponse movieReponse) {
             if (movieReponse != null) {

@@ -59,7 +59,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         Movie movie = movies.get(position);
 
         Glide.with(holder.itemView.getContext())
-                .load(movie.getPoster())
+                .load("https://image.tmdb.org/t/p/original" + movie.getPoster())
                 .placeholder(new ColorDrawable(Color.GRAY))
                 .error(new ColorDrawable(Color.GRAY))
                 .transform(new CenterCrop(), new RoundedCorners(16))
