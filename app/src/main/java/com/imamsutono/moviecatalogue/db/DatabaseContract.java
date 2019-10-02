@@ -11,5 +11,8 @@ class DatabaseContract {
         static String TITLE = "title";
         static String RELEASE_DATE = "release_date";
         static String LANGUAGE = "language";
+        static String VOTERS = "voters";
+        static String SCORE = "score";
+        static String DESCRIPTION = "description";
     }
 }

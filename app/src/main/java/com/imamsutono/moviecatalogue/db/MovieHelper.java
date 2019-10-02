@@ -14,10 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.provider.BaseColumns._ID;
+import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.DESCRIPTION;
 import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.LANGUAGE;
 import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.POSTER;
 import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.RELEASE_DATE;
+import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.SCORE;
 import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.TITLE;
+import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.VOTERS;
 import static com.imamsutono.moviecatalogue.db.DatabaseContract.TABLE_MOVIE;
 
 public class MovieHelper {
@@ -74,6 +77,9 @@ public class MovieHelper {
                 movie.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(TITLE)));
                 movie.setYear(cursor.getString(cursor.getColumnIndexOrThrow(RELEASE_DATE)));
                 movie.setLanguage(cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE)));
+                movie.setVoters(cursor.getString(cursor.getColumnIndexOrThrow(VOTERS)));
+                movie.setScore(cursor.getString(cursor.getColumnIndexOrThrow(SCORE)));
+                movie.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(DESCRIPTION)));
 
                 movies.add(movie);
                 cursor.moveToNext();
@@ -86,9 +92,8 @@ public class MovieHelper {
 
     public int getMovie(String title, String year) {
         String query = "SELECT * FROM " + TABLE_MOVIE +
-                " WHERE " + TITLE + " = '" + title + "'" +
+                " WHERE " + TITLE + " = '" + title.replace("'", "''") + "'" +
                 " AND " + RELEASE_DATE + " = '" + year + "'";
-        Log.d("query", query);
         Cursor cursor = null;
 
         try {
@@ -110,6 +115,9 @@ public class MovieHelper {
         args.put(TITLE, movie.getTitle());
         args.put(RELEASE_DATE, movie.getYear());
         args.put(LANGUAGE, movie.getLanguage());
+        args.put(VOTERS, movie.getVoters());
+        args.put(SCORE, movie.getScore());
+        args.put(DESCRIPTION, movie.getDescription());
 
         return database.insert(DATABASE_TABLE, null, args);
     }
@@ -117,7 +125,7 @@ public class MovieHelper {
     public int deleteMovie(String title, String year) {
         return database.delete(
                 TABLE_MOVIE,
-                TITLE + " = '" + title + "' AND " + RELEASE_DATE + " = '" + year + "'",
+                TITLE + " = '" + title.replace("'", "''") + "' AND " + RELEASE_DATE + " = '" + year + "'",
                 null
         );
     }

@@ -14,10 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.provider.BaseColumns._ID;
+import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.DESCRIPTION;
 import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.LANGUAGE;
 import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.POSTER;
 import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.RELEASE_DATE;
+import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.SCORE;
 import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.TITLE;
+import static com.imamsutono.moviecatalogue.db.DatabaseContract.DbColumns.VOTERS;
 import static com.imamsutono.moviecatalogue.db.DatabaseContract.TABLE_TVSHOW;
 
 public class TvShowHelper {
@@ -73,6 +76,9 @@ public class TvShowHelper {
                 tvShow.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(TITLE)));
                 tvShow.setYear(cursor.getString(cursor.getColumnIndexOrThrow(RELEASE_DATE)));
                 tvShow.setLanguage(cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE)));
+                tvShow.setVoters(cursor.getString(cursor.getColumnIndexOrThrow(VOTERS)));
+                tvShow.setScore(cursor.getString(cursor.getColumnIndexOrThrow(SCORE)));
+                tvShow.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(DESCRIPTION)));
 
                 tvShows.add(tvShow);
                 cursor.moveToNext();
@@ -86,7 +92,7 @@ public class TvShowHelper {
 
     public int getTvShow(String title, String year) {
         String query = "SELECT * FROM " + TABLE_TVSHOW +
-                " WHERE " + TITLE + " = '" + title + "'" +
+                " WHERE " + TITLE + " = '" + title.replace("'", "''") + "'" +
                 " AND " + RELEASE_DATE + " = '" + year + "'";
         Cursor cursor = null;
 
@@ -109,6 +115,9 @@ public class TvShowHelper {
         args.put(TITLE, tvShow.getTitle());
         args.put(RELEASE_DATE, tvShow.getYear());
         args.put(LANGUAGE, tvShow.getLanguage());
+        args.put(VOTERS, tvShow.getVoters());
+        args.put(SCORE, tvShow.getScore());
+        args.put(DESCRIPTION, tvShow.getDescription());
 
         return database.insert(DATABASE_TABLE, null, args);
     }
@@ -116,7 +125,7 @@ public class TvShowHelper {
     public int deleteTvShow(String title, String year) {
         return database.delete(
                 TABLE_TVSHOW,
-                TITLE + " = '" + title + "' AND " + RELEASE_DATE + " = '" + year + "'",
+                TITLE + " = '" + title.replace("'", "''") + "' AND " + RELEASE_DATE + " = '" + year + "'",
                 null
         );
     }
