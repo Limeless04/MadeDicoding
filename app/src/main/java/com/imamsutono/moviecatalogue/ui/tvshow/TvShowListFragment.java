@@ -3,6 +3,7 @@ package com.imamsutono.moviecatalogue.ui.tvshow;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -39,12 +40,30 @@ public class TvShowListFragment extends Fragment {
         rvMovies = view.findViewById(R.id.rv_search);
         rvMovies.setHasFixedSize(true);
         progressBar = view.findViewById(R.id.progress_search);
+        listTvShow.clear();
 
-        TvShowListViewModel viewModel = ViewModelProviders.of(this).get(TvShowListViewModel.class);
+        final TvShowListViewModel viewModel = ViewModelProviders.of(this).get(TvShowListViewModel.class);
         viewModel.init();
         viewModel.getTvShows().observe(this, getTvShow);
-
         showLoading();
+
+        SearchView searchView = view.findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                listTvShow.clear();
+                viewModel.search(s);
+                viewModel.getTvShows().observe(getViewLifecycleOwner(), getTvShow);
+                showLoading();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+
         return view;
     }
 
@@ -77,8 +96,8 @@ public class TvShowListFragment extends Fragment {
     }
 
     private void openDetail(int id) {
-        Intent intent = new Intent(getContext(), TvShowDetailFragment.class);
-        intent.putExtra(TvShowDetailFragment.EXTRA_ID, id);
+        Intent intent = new Intent(getContext(), TvShowDetailActivity.class);
+        intent.putExtra(TvShowDetailActivity.EXTRA_ID, id);
         startActivity(intent);
     }
 

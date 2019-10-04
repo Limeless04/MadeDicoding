@@ -26,8 +26,8 @@ public interface ServiceInterface {
     Call<TvShowResponse> getTvShow();
 
     @GET("/3/tv/{id}?api_key=" + API_KEY + "&language=en-US")
-    Call<TvShow> getTvShowDetai(@Path("id") int id);
+    Call<TvShow> getTvShowDetail(@Path("id") int id);
 
-    @GET("/3/search/movie/?api_key=" + API_KEY + "&language=en-US&page=1&include_adult=false")
+    @GET("/3/search/tv?api_key=" + API_KEY + "&language=en-US&page=1")
     Call<TvShowResponse> searchTvShow(@Query("query") String query);
 }

@@ -1,4 +1,4 @@
-package com.imamsutono.moviecatalogue.activity;
+package com.imamsutono.moviecatalogue.ui.movie;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -20,34 +20,26 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.imamsutono.moviecatalogue.db.MovieHelper;
-import com.imamsutono.moviecatalogue.db.TvShowHelper;
-import com.imamsutono.moviecatalogue.service.ServiceInterface;
-import com.imamsutono.moviecatalogue.service.ServiceGenerator;
-import com.imamsutono.moviecatalogue.model.Movie;
 import com.imamsutono.moviecatalogue.R;
-import com.imamsutono.moviecatalogue.model.TvShow;
+import com.imamsutono.moviecatalogue.db.MovieHelper;
+import com.imamsutono.moviecatalogue.model.Movie;
+import com.imamsutono.moviecatalogue.service.ServiceGenerator;
+import com.imamsutono.moviecatalogue.service.ServiceInterface;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
+public class MovieDetailActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String EXTRA_ID = "extra_id";
-    public static final String EXTRA_TYPE = "extra_data";
     public static final String EXTRA_MOVIE = "extra_movie";
-    public static final String EXTRA_TVSHOW = "extra_tvshow";
     public static final String EXTRA_POSITION = "extra_position";
-    private Movie movie;
-    private TvShow tvShow;
-    private MovieHelper movieHelper;
-    private TvShowHelper tvShowHelper;
-    private String type;
-    private int position;
 
+    private Movie movie;
+    private MovieHelper movieHelper;
     private ServiceInterface service = ServiceGenerator.createService(ServiceInterface.class);
     private Call<Movie> callMovie;
-    private Call<TvShow> callTvShow;
+    private int position;
 
     private ProgressBar progressBar;
     private ImageView imgPoster;
@@ -83,39 +75,21 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         tvScore = findViewById(R.id.txt_score_detail);
         tvDescription = findViewById(R.id.txt_description_detail);
         btnFavorite = findViewById(R.id.btn_favorite);
-
         btnFavorite.setOnClickListener(this);
-        type = getIntent().getStringExtra(EXTRA_TYPE);
+
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
             int id = extras.getInt(EXTRA_ID, 2);
             callMovie = service.getMovieDetail(id);
-            callTvShow = service.getTvShowDetail(id);
         }
+        movieHelper = MovieHelper.getInstance(getApplicationContext());
+        movieHelper.open();
+        movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
+        position = getIntent().getIntExtra(EXTRA_POSITION, 0);
 
-        if (type != null) {
-            if (type.equals("movie")) {
-                movieHelper = MovieHelper.getInstance(getApplicationContext());
-                movieHelper.open();
-                movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
-            } else {
-                tvShowHelper = TvShowHelper.getInstance(getApplicationContext());
-                tvShowHelper.open();
-                tvShow = getIntent().getParcelableExtra(EXTRA_TVSHOW);
-            }
-        }
-
-        if (movie != null || tvShow != null) {
-            position = getIntent().getIntExtra(EXTRA_POSITION, 0);
-        }
-
-        if (savedInstanceState == null && type != null) {
-            if (type.equals("movie")) {
-                getMovieDetail();
-            } else {
-                getTvShowDetail();
-            }
+        if (savedInstanceState == null) {
+            getMovieDetail();
         }
     }
 
@@ -157,12 +131,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        if (type.equals("movie")) {
-            movieHelper.close();
-        } else {
-            tvShowHelper.close();
-        }
+        movieHelper.close();
     }
 
     private void getMovieDetail() {
@@ -185,32 +154,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
             @Override
             public void onFailure(@NonNull Call<Movie> call, @NonNull Throwable t) {
-                Toast.makeText(DetailActivity.this, "Gagal mengambil data detail film", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void getTvShowDetail() {
-        callTvShow.enqueue(new Callback<TvShow>() {
-            @Override
-            public void onResponse(@NonNull Call<TvShow> call, @NonNull Response<TvShow> response) {
-                tvShow = response.body();
-
-                if (tvShow != null) {
-                    poster += tvShow.getPoster();
-                    title = tvShow.getTitle();
-                    year = tvShow.getYear();
-                    voters = tvShow.getVoters();
-                    score = tvShow.getScore() + "%";
-                    description = tvShow.getDescription();
-
-                    showDetail();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<TvShow> call, @NonNull Throwable t) {
-                Toast.makeText(DetailActivity.this, "Gagal mengambil data detail pertunjukan TV", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MovieDetailActivity.this, "Gagal mengambil data detail film", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -237,14 +181,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void setBtnFavoriteIcon() {
-        boolean isFavorited;
         int icon;
-
-        if (type.equals("movie")) {
-            isFavorited = movieHelper.getMovie(title, year) > 0;
-        } else {
-            isFavorited = tvShowHelper.getTvShow(title, year) > 0;
-        }
+        boolean isFavorited = movieHelper.getMovie(title, year) > 0;
 
         if (isFavorited) {
             icon = R.drawable.ic_favorite_black_24dp;
@@ -263,62 +201,33 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             Intent intent = new Intent();
             boolean isFavorited;
 
-            if (type.equals("movie")) {
-                movie.setPoster(poster);
-                movie.setTitle(title);
-                movie.setYear(year);
-                movie.setLanguage("en");
+            movie.setPoster(poster);
+            movie.setTitle(title);
+            movie.setYear(year);
+            movie.setLanguage("en");
 
-                intent.putExtra(EXTRA_MOVIE, movie);
-                isFavorited = movieHelper.getMovie(title, year) > 0;
-            } else {
-                tvShow.setPoster(poster);
-                tvShow.setTitle(title);
-                tvShow.setYear(year);
-                tvShow.setLanguage("en");
-
-                intent.putExtra(EXTRA_TVSHOW, tvShow);
-                isFavorited = tvShowHelper.getTvShow(title, year) > 0;
-            }
+            intent.putExtra(EXTRA_MOVIE, movie);
+            isFavorited = movieHelper.getMovie(title, year) > 0;
 
             intent.putExtra(EXTRA_POSITION, position);
             String message;
 
             if (!isFavorited) {
-                long result;
-
-                if (type.equals("movie")) {
-                    result = movieHelper.insertMovie(movie);
-                } else {
-                    result = tvShowHelper.insertTvShow(tvShow);
-                }
+                long result = movieHelper.insertMovie(movie);
 
                 if (result > 0) {
-                    if (type.equals("movie")) {
-                        movie.setId((int) result);
-                    } else {
-                        tvShow.setId((int) result);
-                    }
-
-//                    setResult(RESULT_ADD, intent);
+                    movie.setId((int) result);
                     setBtnFavoriteIcon();
                     message = "Berhasil ditambahkan ke favorit";
                 } else {
                     message = "Gagal menambahkan favorit";
                 }
             } else {
-                long delete;
-
-                if (type.equals("movie")) {
-                    delete = movieHelper.deleteMovie(title, year);
-                } else {
-                    delete = tvShowHelper.deleteTvShow(title, year);
-                }
+                long delete = movieHelper.deleteMovie(title, year);
 
                 if (delete > 0) {
                     Intent delIntent = new Intent();
                     delIntent.putExtra(EXTRA_POSITION, position);
-//                    setResult(RESULT_DELETE, delIntent);
                     setBtnFavoriteIcon();
                     message = "Berhasil dihapus dari favorit";
                 } else {
@@ -326,7 +235,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
 
-            Toast.makeText(DetailActivity.this, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(MovieDetailActivity.this, message, Toast.LENGTH_SHORT).show();
         }
     }
 }

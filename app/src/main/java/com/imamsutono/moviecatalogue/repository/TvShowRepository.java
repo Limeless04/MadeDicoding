@@ -1,5 +1,6 @@
 package com.imamsutono.moviecatalogue.repository;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.imamsutono.moviecatalogue.model.TvShowResponse;
@@ -32,14 +33,34 @@ public class TvShowRepository {
 
         service.getTvShow().enqueue(new Callback<TvShowResponse>() {
             @Override
-            public void onResponse(Call<TvShowResponse> call, Response<TvShowResponse> response) {
+            public void onResponse(@NonNull Call<TvShowResponse> call, @NonNull Response<TvShowResponse> response) {
                 if (response.isSuccessful()) {
                     tvShowData.setValue(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<TvShowResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<TvShowResponse> call, @NonNull Throwable t) {
+                tvShowData.setValue(null);
+            }
+        });
+
+        return tvShowData;
+    }
+
+    public MutableLiveData<TvShowResponse> searchTvShow(String query) {
+        final MutableLiveData<TvShowResponse> tvShowData = new MutableLiveData<>();
+
+        service.searchTvShow(query).enqueue(new Callback<TvShowResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<TvShowResponse> call, @NonNull Response<TvShowResponse> response) {
+                if (response.isSuccessful()) {
+                    tvShowData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<TvShowResponse> call, @NonNull Throwable t) {
                 tvShowData.setValue(null);
             }
         });

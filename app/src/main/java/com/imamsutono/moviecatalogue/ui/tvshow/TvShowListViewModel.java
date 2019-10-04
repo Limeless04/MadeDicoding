@@ -9,6 +9,7 @@ import com.imamsutono.moviecatalogue.repository.TvShowRepository;
 
 public class TvShowListViewModel extends ViewModel {
     private MutableLiveData<TvShowResponse> tvShowData;
+    private TvShowRepository tvShowRepository = TvShowRepository.getInstance();
 
     public void init() {
         if (tvShowData == null) {
@@ -16,6 +17,10 @@ public class TvShowListViewModel extends ViewModel {
             tvShowRepository = TvShowRepository.getInstance();
             tvShowData = tvShowRepository.getTvShows();
         }
+    }
+
+    public void search(String query) {
+        tvShowData = tvShowRepository.searchTvShow(query);
     }
 
     public LiveData<TvShowResponse> getTvShows() {
