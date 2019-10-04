@@ -9,4 +9,5 @@
     <string name="tab_text_3">Favorite</string>
     <string name="tab_text_4">Search</string>
     <string name="voters">Voters</string>
+    <string name="search_view_hint">Ketikan judul film</string>
 </resources>

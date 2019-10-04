@@ -11,18 +11,6 @@ public class ServiceGenerator {
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
-//    public static Retrofit getInstance() {
-//        if (retrofit == null) {
-//            retrofit = new Retrofit.Builder()
-//                    .baseUrl(BASE_URL)
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build();
-//        }
-//
-//        return retrofit;
-//    }
-
-
     public static <S> S createService(Class<S> serviceClass) {
         return retrofit.create(serviceClass);
     }

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,16 +36,34 @@ public class MovieListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        View view = inflater.inflate(R.layout.search_list_fragment, container, false);
 
-        rvMovies = view.findViewById(R.id.rv_list);
+        rvMovies = view.findViewById(R.id.rv_search);
         rvMovies.setHasFixedSize(true);
-        progressBar = view.findViewById(R.id.progress_list);
+        progressBar = view.findViewById(R.id.progress_search);
+        listMovie.clear();
 
-        MovieListViewModel viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
+        final MovieListViewModel viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
         viewModel.init();
         viewModel.getMovies().observe(this, getMovie);
         showLoading();
+
+        SearchView searchView = view.findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                listMovie.clear();
+                viewModel.search(s);
+                viewModel.getMovies().observe(getViewLifecycleOwner(), getMovie);
+                showLoading();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
 
         return view;
     }
@@ -78,8 +97,8 @@ public class MovieListFragment extends Fragment {
     }
 
     private void openDetail(int id) {
-        Intent intent = new Intent(getContext(), MovieDetailFragment.class);
-        intent.putExtra(MovieDetailFragment.EXTRA_ID, id);
+        Intent intent = new Intent(getContext(), MovieDetailActivity.class);
+        intent.putExtra(MovieDetailActivity.EXTRA_ID, id);
         startActivity(intent);
     }
 

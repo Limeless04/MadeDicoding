@@ -33,12 +33,12 @@ public class TvShowListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        View view = inflater.inflate(R.layout.search_list_fragment, container, false);
         setHasOptionsMenu(true);
 
-        rvMovies = view.findViewById(R.id.rv_list);
+        rvMovies = view.findViewById(R.id.rv_search);
         rvMovies.setHasFixedSize(true);
-        progressBar = view.findViewById(R.id.progress_list);
+        progressBar = view.findViewById(R.id.progress_search);
 
         TvShowListViewModel viewModel = ViewModelProviders.of(this).get(TvShowListViewModel.class);
         viewModel.init();
