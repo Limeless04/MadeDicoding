@@ -6,19 +6,26 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.imamsutono.moviecatalogue.DailyReminderReceiver;
 import com.imamsutono.moviecatalogue.R;
 import com.imamsutono.moviecatalogue.fragment.MainFragment;
 import com.imamsutono.moviecatalogue.ui.favorite.FavoriteFragment;
 import com.imamsutono.moviecatalogue.ui.search.SearchFragment;
 
+import java.util.Calendar;
+
 import static com.imamsutono.moviecatalogue.fragment.MainFragment.ARG_OBJECT;
 
 public class MainActivity extends AppCompatActivity {
-
     final Fragment favFragment = new FavoriteFragment();
     final Fragment searchFragment = new SearchFragment();
     final FragmentManager fm = getSupportFragmentManager();
@@ -36,6 +43,26 @@ public class MainActivity extends AppCompatActivity {
         }
         MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mainViewModel.init();
+
+        initAlarmManager();
+    }
+
+    private void initAlarmManager() {
+        Context context = getApplicationContext();
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, DailyReminderReceiver.class);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+
+        if (alarmManager != null) {
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, alarmIntent);
+        } else {
+            Log.d(MainActivity.class.getSimpleName(), "alarm manager is null");
+        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {

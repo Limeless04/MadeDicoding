@@ -9,5 +9,8 @@
     <string name="tab_text_3">Favorite</string>
     <string name="tab_text_4">Search</string>
     <string name="voters">Voters</string>
-    <string name="search_view_hint">Ketikan judul film</string>
+    <string name="search_view_hint">Type the title…</string>
+    <string name="notif_title">Dont forget to check Movie Catalogue</string>
+    <string name="notif_content">See whats new movie and tv show today</string>
+    <string name="notif_sub_text">The new one is waiting</string>
 </resources>
