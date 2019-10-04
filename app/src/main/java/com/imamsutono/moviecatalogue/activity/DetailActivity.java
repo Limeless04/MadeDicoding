@@ -49,21 +49,21 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private Call<Movie> callMovie;
     private Call<TvShow> callTvShow;
 
-    ProgressBar progressBar;
-    ImageView imgPoster;
-    TextView tvTitle;
-    TextView tvYear;
-    TextView tvVoters;
-    TextView tvScore;
-    TextView tvDescription;
-    FloatingActionButton btnFavorite;
+    private ProgressBar progressBar;
+    private ImageView imgPoster;
+    private TextView tvTitle;
+    private TextView tvYear;
+    private TextView tvVoters;
+    private TextView tvScore;
+    private TextView tvDescription;
+    private FloatingActionButton btnFavorite;
 
-    String poster = "";
-    String title = "";
-    String year = "";
-    String voters = "";
-    String score = "";
-    String description = "";
+    private String poster = "";
+    private String title = "";
+    private String year = "";
+    private String voters = "";
+    private String score = "";
+    private String description = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,14 +171,16 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
                 movie = response.body();
 
-                poster += movie.getPoster();
-                title = movie.getTitle();
-                year = movie.getYear();
-                voters = movie.getVoters();
-                score = movie.getScore() + "%";
-                description = movie.getDescription();
+                if (movie != null) {
+                    poster += movie.getPoster();
+                    title = movie.getTitle();
+                    year = movie.getYear();
+                    voters = movie.getVoters();
+                    score = movie.getScore() + "%";
+                    description = movie.getDescription();
 
-                showDetail();
+                    showDetail();
+                }
             }
 
             @Override
@@ -194,14 +196,16 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             public void onResponse(@NonNull Call<TvShow> call, @NonNull Response<TvShow> response) {
                 tvShow = response.body();
 
-                poster += tvShow.getPoster();
-                title = tvShow.getTitle();
-                year = tvShow.getYear();
-                voters = tvShow.getVoters();
-                score = tvShow.getScore() + "%";
-                description = tvShow.getDescription();
+                if (tvShow != null) {
+                    poster += tvShow.getPoster();
+                    title = tvShow.getTitle();
+                    year = tvShow.getYear();
+                    voters = tvShow.getVoters();
+                    score = tvShow.getScore() + "%";
+                    description = tvShow.getDescription();
 
-                showDetail();
+                    showDetail();
+                }
             }
 
             @Override

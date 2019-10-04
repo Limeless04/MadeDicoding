@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Katalog Film</string>
-    <string name="like">Suka</string>
-    <string name="share">Bagikan</string>
-    <string name="genre">Aliran</string>
-    <string name="duration">Durasi</string>
     <string name="release_on">Diluncurkan pada</string>
     <string name="score">skor</string>
     <string name="poster_movie_catalogue">Poster Katalog Film</string>
     <string name="change_language_settings">Ubah Pengaturan Bahasa</string>
-    <string name="title_activity_home">HomeActivity</string>
     <string name="tab_text_1">Film</string>
     <string name="tab_text_2">Acara TV</string>
     <string name="tab_text_3">Favorit</string>
-    <string name="hello_blank_fragment">Halo</string>
+    <string name="tab_text_4">Cari</string>
     <string name="voters">Pemilih</string>
-    <string name="empty_data">Tidak ada data</string>
-    <string name="poster_url">https://image.tmdb.org/t/p/original</string>
 </resources>

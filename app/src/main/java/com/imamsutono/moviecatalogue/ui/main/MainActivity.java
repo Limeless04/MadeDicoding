@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     final Fragment favFragment = new FavoriteFragment();
     final Fragment searchFragment = new SearchFragment();
     final FragmentManager fm = getSupportFragmentManager();
-    private MainViewModel mainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             navView.setSelectedItemId(R.id.navigation_movie);
         }
-        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mainViewModel.init();
     }
 
