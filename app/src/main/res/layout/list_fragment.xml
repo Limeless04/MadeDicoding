@@ -7,7 +7,7 @@
     tools:context=".ui.favoritelist.FavoriteListFragment">
 
     <ProgressBar
-        android:id="@+id/progress_fav_list"
+        android:id="@+id/progress_list"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_gravity="center"
@@ -15,7 +15,7 @@
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_fav_list"
+        android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="40dp"

@@ -13,12 +13,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.imamsutono.moviecatalogue.R;
 import com.imamsutono.moviecatalogue.fragment.MainFragment;
 import com.imamsutono.moviecatalogue.ui.favorite.FavoriteFragment;
+import com.imamsutono.moviecatalogue.ui.search.SearchFragment;
 
 import static com.imamsutono.moviecatalogue.fragment.MainFragment.ARG_OBJECT;
 
 public class MainActivity extends AppCompatActivity {
 
     final Fragment favFragment = new FavoriteFragment();
+    final Fragment searchFragment = new SearchFragment();
     final FragmentManager fm = getSupportFragmentManager();
     private MainViewModel mainViewModel;
 
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
                     args.putString(ARG_OBJECT, "tv_show");
                     mainFragment.setArguments(args);
                     fm.beginTransaction().replace(R.id.main_content, mainFragment).commit();
+                    return true;
+                case R.id.navigation_search:
+                    fm.beginTransaction().replace(R.id.main_content, searchFragment).commit();
                     return true;
                 default:
                     fm.beginTransaction().replace(R.id.main_content, favFragment).commit();

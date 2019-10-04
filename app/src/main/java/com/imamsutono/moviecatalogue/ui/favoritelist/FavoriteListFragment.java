@@ -45,9 +45,9 @@ public class FavoriteListFragment extends Fragment implements LoadFavoritesCallb
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.favorite_list_fragment, container, false);
-        progressBar = view.findViewById(R.id.progress_fav_list);
-        rvFavorite = view.findViewById(R.id.rv_fav_list);
+        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        progressBar = view.findViewById(R.id.progress_list);
+        rvFavorite = view.findViewById(R.id.rv_list);
         rvFavorite.setHasFixedSize(true);
 
         Bundle args = getArguments();

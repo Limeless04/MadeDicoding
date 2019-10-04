@@ -1,7 +1,5 @@
 package com.imamsutono.moviecatalogue.ui.favorite;
 
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -22,13 +20,9 @@ import com.google.android.material.tabs.TabLayout;
 import com.imamsutono.moviecatalogue.R;
 import com.imamsutono.moviecatalogue.adapter.PagerAdapter;
 
+import java.util.Objects;
+
 public class FavoriteFragment extends Fragment {
-
-    private FavoriteViewModel mViewModel;
-
-    public static FavoriteFragment newInstance() {
-        return new FavoriteFragment();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -41,17 +35,11 @@ public class FavoriteFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.tab_favorite);
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setText(R.string.tab_text_1);
-        tabLayout.getTabAt(1).setText(R.string.tab_text_2);
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setText(R.string.tab_text_1);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setText(R.string.tab_text_2);
 
         setHasOptionsMenu(true);
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(FavoriteViewModel.class);
     }
 
     @Override
