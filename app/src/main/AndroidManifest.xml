@@ -14,7 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.tvshow.TvShowDetailActivity"></activity>
+        <receiver android:name=".FavoriteMovieWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/favorite_movie_widget_info" />
+        </receiver>
+
+        <activity android:name=".ui.tvshow.TvShowDetailActivity" />
         <activity android:name=".ui.movie.MovieDetailActivity" />
         <activity android:name=".ui.favoritedetail.DetailFavoriteActivity" />
         <activity android:name=".ui.main.MainActivity">
@@ -26,6 +36,7 @@
         </activity>
         <activity android:name=".activity.DetailActivity" />
         <activity android:name=".activity.HomeActivity" />
+
         <receiver
             android:name=".NotificationReceiver"
             android:enabled="true"
