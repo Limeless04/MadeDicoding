@@ -67,4 +67,24 @@ public class MovieRepository {
 
         return movieData;
     }
+
+    public MutableLiveData<MovieResponse> getTodayRelease(String date) {
+        final MutableLiveData<MovieResponse> movieData = new MutableLiveData<>();
+
+        service.getTodayReleaseMovie(date, date).enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
+                if (response.isSuccessful()) {
+                    movieData.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
+                movieData.setValue(null);
+            }
+        });
+
+        return movieData;
+    }
 }

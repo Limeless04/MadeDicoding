@@ -11,24 +11,31 @@ import com.imamsutono.moviecatalogue.repository.TvShowRepository;
 
 public class MainViewModel extends ViewModel {
     private MutableLiveData<MovieResponse> movieData;
+    private MutableLiveData<MovieResponse> todayReleaseMovie;
     private MutableLiveData<TvShowResponse> tvShowData;
+    private MovieRepository movieRepository = MovieRepository.getInstance();
 
-    public void init() {
+    public void init(String date) {
         if (movieData == null) {
-            MovieRepository movieRepository;
-            movieRepository = MovieRepository.getInstance();
             movieData = movieRepository.getMovies();
         }
 
         if (tvShowData == null) {
-            TvShowRepository tvShowRepository;
-            tvShowRepository = TvShowRepository.getInstance();
+            TvShowRepository tvShowRepository = TvShowRepository.getInstance();
             tvShowData = tvShowRepository.getTvShows();
+        }
+
+        if (todayReleaseMovie == null) {
+            todayReleaseMovie = movieRepository.getTodayRelease(date);
         }
     }
 
     public LiveData<MovieResponse> getMovies() {
         return movieData;
+    }
+
+    LiveData<MovieResponse> getTodayReleaseMovie() {
+        return todayReleaseMovie;
     }
 
     public LiveData<TvShowResponse> getTvShows() {

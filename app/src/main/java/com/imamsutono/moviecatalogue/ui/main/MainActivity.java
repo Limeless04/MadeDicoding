@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlarmManager;
@@ -13,22 +14,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.imamsutono.moviecatalogue.DailyReminderReceiver;
+import com.imamsutono.moviecatalogue.NotificationReceiver;
 import com.imamsutono.moviecatalogue.R;
 import com.imamsutono.moviecatalogue.fragment.MainFragment;
+import com.imamsutono.moviecatalogue.model.Movie;
+import com.imamsutono.moviecatalogue.model.MovieResponse;
 import com.imamsutono.moviecatalogue.ui.favorite.FavoriteFragment;
 import com.imamsutono.moviecatalogue.ui.search.SearchFragment;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
+import static com.imamsutono.moviecatalogue.NotificationReceiver.TODAY_RELEASE_DATA;
 import static com.imamsutono.moviecatalogue.fragment.MainFragment.ARG_OBJECT;
 
 public class MainActivity extends AppCompatActivity {
     final Fragment favFragment = new FavoriteFragment();
     final Fragment searchFragment = new SearchFragment();
     final FragmentManager fm = getSupportFragmentManager();
+    private List<Movie> todayReleaseMovie = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +52,22 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             navView.setSelectedItemId(R.id.navigation_movie);
         }
-        MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        mainViewModel.init();
 
-        initAlarmManager();
+        MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String now = dateFormat.format(new Date());
+
+        mainViewModel.init(now);
+        mainViewModel.getTodayReleaseMovie().observe(this, getTodayReleaseMovie);
+
+        setupDailyReminder();
     }
 
-    private void initAlarmManager() {
-        Context context = getApplicationContext();
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, DailyReminderReceiver.class);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+    public void setupDailyReminder() {
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+        intent.setAction(NotificationReceiver.DAILY_REMINDER);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -60,10 +76,40 @@ public class MainActivity extends AppCompatActivity {
         if (alarmManager != null) {
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, alarmIntent);
-        } else {
-            Log.d(MainActivity.class.getSimpleName(), "alarm manager is null");
         }
     }
+
+    private void setupReleaseTodayReminder() {
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+
+        if (alarmManager != null) {
+            for (int i = 0; i < todayReleaseMovie.size(); i++) {
+                Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+                intent.setAction(todayReleaseMovie.get(i).getTitle());
+                intent.putExtra(NotificationReceiver.EXTRA_MOVIE_ID, i);
+
+                PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY, alarmIntent);
+            }
+        }
+    }
+
+    private Observer<MovieResponse> getTodayReleaseMovie = new Observer<MovieResponse>() {
+        @Override
+        public void onChanged(MovieResponse movieResponse) {
+            if (movieResponse != null) {
+                List<Movie> movies = movieResponse.getMovies();
+                todayReleaseMovie.addAll(movies);
+                setupReleaseTodayReminder();
+            } else {
+                Toast.makeText(getApplicationContext(), "Gagal mengambil data rilis hari ini", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override

@@ -27,7 +27,7 @@
         <activity android:name=".activity.DetailActivity" />
         <activity android:name=".activity.HomeActivity" />
         <receiver
-            android:name=".DailyReminderReceiver"
+            android:name=".NotificationReceiver"
             android:enabled="true"
             android:exported="true" />
     </application>

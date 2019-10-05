@@ -11,7 +11,7 @@
     <string name="tab_text_4">Cari</string>
     <string name="voters">Pemilih</string>
     <string name="search_view_hint">Ketikan judul film…</string>
-    <string name="notif_title">Jangan lupa cek Katalog Film</string>
-    <string name="notif_content">Lihat apa yang baru hari ini</string>
-    <string name="notif_sub_text">Yang baru sedang menunggu</string>
+    <string name="notif_daily_title">Jangan lupa cek Katalog Film</string>
+    <string name="notif_daily_content">Lihat apa yang baru hari ini</string>
+    <string name="notif_sub_text">Yang baru menunggu</string>
 </resources>

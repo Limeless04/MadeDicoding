@@ -22,6 +22,9 @@ public interface ServiceInterface {
     @GET("/3/search/movie?api_key=" + API_KEY + "&language=en-US&page=1&include_adult=false")
     Call<MovieResponse> searchMovie(@Query("query") String query);
 
+    @GET("/3/discover/movie?api_key=" + API_KEY)
+    Call<MovieResponse> getTodayReleaseMovie(@Query("primary_release_date.gte") String dateGte, @Query("primary_release_date.lte") String dateLte);
+
     @GET("/3/discover/tv?api_key=" + API_KEY + "&language=en-US")
     Call<TvShowResponse> getTvShow();
 
