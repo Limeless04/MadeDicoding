@@ -12,7 +12,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -32,7 +31,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.imamsutono.moviecatalogue.NotificationReceiver.TODAY_RELEASE_DATA;
 import static com.imamsutono.moviecatalogue.fragment.MainFragment.ARG_OBJECT;
 
 public class MainActivity extends AppCompatActivity {
@@ -62,6 +60,33 @@ public class MainActivity extends AppCompatActivity {
 
         setupDailyReminder();
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Fragment mainFragment = new MainFragment();
+            Bundle args = new Bundle();
+
+            switch (menuItem.getItemId()) {
+                case R.id.navigation_movie:
+                    args.putString(ARG_OBJECT, "movies");
+                    mainFragment.setArguments(args);
+                    fm.beginTransaction().replace(R.id.main_content, mainFragment).commit();
+                    return true;
+                case R.id.navigation_tvshow:
+                    args.putString(ARG_OBJECT, "tv_show");
+                    mainFragment.setArguments(args);
+                    fm.beginTransaction().replace(R.id.main_content, mainFragment).commit();
+                    return true;
+                case R.id.navigation_search:
+                    fm.beginTransaction().replace(R.id.main_content, searchFragment).commit();
+                    return true;
+                default:
+                    fm.beginTransaction().replace(R.id.main_content, favFragment).commit();
+                    return true;
+            }
+        }
+    };
 
     public void setupDailyReminder() {
         AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
@@ -107,33 +132,6 @@ public class MainActivity extends AppCompatActivity {
                 setupReleaseTodayReminder();
             } else {
                 Toast.makeText(getApplicationContext(), "Gagal mengambil data rilis hari ini", Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-
-    private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            Fragment mainFragment = new MainFragment();
-            Bundle args = new Bundle();
-
-            switch (menuItem.getItemId()) {
-                case R.id.navigation_movie:
-                    args.putString(ARG_OBJECT, "movies");
-                    mainFragment.setArguments(args);
-                    fm.beginTransaction().replace(R.id.main_content, mainFragment).commit();
-                    return true;
-                case R.id.navigation_tvshow:
-                    args.putString(ARG_OBJECT, "tv_show");
-                    mainFragment.setArguments(args);
-                    fm.beginTransaction().replace(R.id.main_content, mainFragment).commit();
-                    return true;
-                case R.id.navigation_search:
-                    fm.beginTransaction().replace(R.id.main_content, searchFragment).commit();
-                    return true;
-                default:
-                    fm.beginTransaction().replace(R.id.main_content, favFragment).commit();
-                    return true;
             }
         }
     };

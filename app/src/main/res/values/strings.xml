@@ -4,6 +4,7 @@
     <string name="score">score</string>
     <string name="poster_movie_catalogue">Poster Movie Catalogue</string>
     <string name="change_language_settings">Change Language Settings</string>
+    <string name="notification_settings">Notification Settings</string>
     <string name="tab_text_1">Movies</string>
     <string name="tab_text_2">TV Show</string>
     <string name="tab_text_3">Favorite</string>

@@ -1,6 +1,8 @@
 package com.imamsutono.moviecatalogue.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.imamsutono.moviecatalogue.NotificationReceiver;
 import com.imamsutono.moviecatalogue.R;
 import com.imamsutono.moviecatalogue.activity.DetailActivity;
 import com.imamsutono.moviecatalogue.adapter.MovieAdapter;
@@ -74,11 +77,30 @@ public class MainFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_change_settings) {
-            Intent mIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
-            startActivity(mIntent);
+        Intent intent = new Intent();
+
+        switch (item.getItemId()) {
+            case R.id.action_change_settings:
+                intent.setAction(Settings.ACTION_LOCALE_SETTINGS);
+                break;
+            case R.id.notification_settings:
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, getContext().getPackageName());
+                    Toast.makeText(getContext(), getContext().getPackageName(), Toast.LENGTH_SHORT).show();
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+                    intent.putExtra("app_package", getContext().getPackageName());
+                    intent.putExtra("app_uid", getContext().getApplicationInfo().uid);
+                } else {
+                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.setData(Uri.parse("package:" + getContext().getPackageName()));
+                }
+                break;
         }
 
+        startActivity(intent);
         return super.onOptionsItemSelected(item);
     }
 

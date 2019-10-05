@@ -15,7 +15,6 @@ public class NotificationReceiver extends BroadcastReceiver {
     public static CharSequence CHANNEL_NAME = "movie catalogue";
 
     public static final String DAILY_REMINDER = "daily_reminder";
-    public static final String TODAY_RELEASE_DATA = "today_release_data";
     public static final String EXTRA_MOVIE_ID = "extra_movie_id";
 
     private String title = "";

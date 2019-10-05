@@ -5,6 +5,7 @@
     <string name="score">skor</string>
     <string name="poster_movie_catalogue">Poster Katalog Film</string>
     <string name="change_language_settings">Ubah Pengaturan Bahasa</string>
+    <string name="notification_settings">Pengaturan Notifikasi</string>
     <string name="tab_text_1">Film</string>
     <string name="tab_text_2">Acara TV</string>
     <string name="tab_text_3">Favorit</string>
