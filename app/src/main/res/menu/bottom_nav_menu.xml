@@ -16,7 +16,6 @@
         android:icon="@drawable/ic_search_black_24dp" />
 
     <item
-        android:id="@+id/navigation_favorite"
         android:title="@string/tab_text_3"
         android:icon="@drawable/ic_favorite_black_24dp" />
 </menu>

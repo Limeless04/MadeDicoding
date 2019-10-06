@@ -289,6 +289,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
                 if (type.equals("movie")) {
                     result = movieHelper.insertMovie(movie);
+
                 } else {
                     result = tvShowHelper.insertTvShow(tvShow);
                 }

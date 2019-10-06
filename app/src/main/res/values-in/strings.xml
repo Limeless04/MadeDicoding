@@ -15,4 +15,6 @@
     <string name="notif_daily_title">Jangan lupa cek Katalog Film</string>
     <string name="notif_daily_content">Lihat apa yang baru hari ini</string>
     <string name="notif_sub_text">Yang baru menunggu</string>
+    <string name="empty_text">TIDAK ADA DATA</string>
+    <string name="widget_image">gambar widget</string>
 </resources>

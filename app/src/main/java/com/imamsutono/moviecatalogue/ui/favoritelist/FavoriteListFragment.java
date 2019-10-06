@@ -232,9 +232,3 @@ public class FavoriteListFragment extends Fragment implements LoadFavoritesCallb
         }
     }
 }
-
-interface LoadFavoritesCallback {
-    void preExecute();
-    void postExecuteMovie(List<Movie> movies);
-    void postExecuteTvShow(List<TvShow> tvShows);
-}

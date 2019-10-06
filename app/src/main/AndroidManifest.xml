@@ -41,6 +41,10 @@
             android:name=".NotificationReceiver"
             android:enabled="true"
             android:exported="true" />
+
+        <service
+            android:name=".StackWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>
