@@ -5,6 +5,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <permission android:name="com.imamsutono.moviecatalogue.READ_DATABASE" android:protectionLevel="normal" />
+    <permission android:name="com.imamsutono.moviecatalogue.WRITE_DATABASE" android:protectionLevel="normal" />
 
     <application
         android:allowBackup="true"
@@ -14,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
         <receiver android:name=".FavoriteMovieWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -45,6 +48,13 @@
         <service
             android:name=".StackWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <provider
+            android:name=".provider.MovieProvider"
+            android:authorities="com.imamsutono.moviecatalogue"
+            android:exported="true"
+            android:readPermission="com.imamsutono.moviecatalogue.READ_DATABASE"
+            android:writePermission="com.imamsutono.moviecatalogue.WRITE_DATABASE" />
     </application>
 
 </manifest>

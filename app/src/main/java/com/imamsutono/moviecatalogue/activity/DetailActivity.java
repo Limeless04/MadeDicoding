@@ -98,7 +98,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             if (type.equals("movie")) {
                 movieHelper = MovieHelper.getInstance(getApplicationContext());
                 movieHelper.open();
-                movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
             } else {
                 tvShowHelper = TvShowHelper.getInstance(getApplicationContext());
                 tvShowHelper.open();
@@ -289,7 +288,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
                 if (type.equals("movie")) {
                     result = movieHelper.insertMovie(movie);
-
                 } else {
                     result = tvShowHelper.insertTvShow(tvShow);
                 }
@@ -301,7 +299,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                         tvShow.setId((int) result);
                     }
 
-//                    setResult(RESULT_ADD, intent);
                     setBtnFavoriteIcon();
                     message = "Berhasil ditambahkan ke favorit";
                 } else {
@@ -319,7 +316,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 if (delete > 0) {
                     Intent delIntent = new Intent();
                     delIntent.putExtra(EXTRA_POSITION, position);
-//                    setResult(RESULT_DELETE, delIntent);
                     setBtnFavoriteIcon();
                     message = "Berhasil dihapus dari favorit";
                 } else {

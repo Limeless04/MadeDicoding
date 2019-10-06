@@ -58,8 +58,65 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel.init(now);
         mainViewModel.getTodayReleaseMovie().observe(this, getTodayReleaseMovie);
 
-        setupDailyReminder();
+        boolean dailyReminderIsSet = (PendingIntent.getBroadcast(getApplicationContext(), 0,
+                new Intent(NotificationReceiver.DAILY_REMINDER),
+                PendingIntent.FLAG_NO_CREATE) != null);
+
+        if (!dailyReminderIsSet)
+            setupDailyReminder();
     }
+
+    public void setupDailyReminder() {
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+        intent.setAction(NotificationReceiver.DAILY_REMINDER);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+
+        if (alarmManager != null) {
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, alarmIntent);
+        }
+    }
+
+    private void setupReleaseTodayReminder() {
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+
+        boolean reminderIsSet = (PendingIntent.getBroadcast(getApplicationContext(), 0,
+                new Intent(todayReleaseMovie.get(0).getTitle()),
+                PendingIntent.FLAG_NO_CREATE) != null);
+
+        if (alarmManager != null && !reminderIsSet) {
+            for (int i = 0; i < todayReleaseMovie.size(); i++) {
+                Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
+                intent.setAction(todayReleaseMovie.get(i).getTitle());
+                intent.putExtra(NotificationReceiver.EXTRA_MOVIE_ID, i);
+
+                PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY, alarmIntent);
+            }
+        }
+    }
+
+    private Observer<MovieResponse> getTodayReleaseMovie = new Observer<MovieResponse>() {
+        @Override
+        public void onChanged(MovieResponse movieResponse) {
+            if (movieResponse != null) {
+                List<Movie> movies = movieResponse.getMovies();
+                todayReleaseMovie.addAll(movies);
+                setupReleaseTodayReminder();
+            } else {
+                Toast.makeText(getApplicationContext(), "Gagal mengambil data rilis hari ini", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -84,54 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     fm.beginTransaction().replace(R.id.main_content, favFragment).commit();
                     return true;
-            }
-        }
-    };
-
-    public void setupDailyReminder() {
-        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
-        intent.setAction(NotificationReceiver.DAILY_REMINDER);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 7);
-
-        if (alarmManager != null) {
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY, alarmIntent);
-        }
-    }
-
-    private void setupReleaseTodayReminder() {
-        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 8);
-
-        if (alarmManager != null) {
-            for (int i = 0; i < todayReleaseMovie.size(); i++) {
-                Intent intent = new Intent(getApplicationContext(), NotificationReceiver.class);
-                intent.setAction(todayReleaseMovie.get(i).getTitle());
-                intent.putExtra(NotificationReceiver.EXTRA_MOVIE_ID, i);
-
-                PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                        AlarmManager.INTERVAL_DAY, alarmIntent);
-            }
-        }
-    }
-
-    private Observer<MovieResponse> getTodayReleaseMovie = new Observer<MovieResponse>() {
-        @Override
-        public void onChanged(MovieResponse movieResponse) {
-            if (movieResponse != null) {
-                List<Movie> movies = movieResponse.getMovies();
-                todayReleaseMovie.addAll(movies);
-                setupReleaseTodayReminder();
-            } else {
-                Toast.makeText(getApplicationContext(), "Gagal mengambil data rilis hari ini", Toast.LENGTH_SHORT).show();
             }
         }
     };

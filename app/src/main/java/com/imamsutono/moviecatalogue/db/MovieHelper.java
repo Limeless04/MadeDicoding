@@ -103,10 +103,63 @@ public class MovieHelper {
             Log.e(MovieHelper.class.getSimpleName(), e.toString());
         }
 
+        int id = cursor.getColumnIndexOrThrow(_ID);
+
         if (cursor != null)
             cursor.close();
 
         return cursor != null ? cursor.getCount() : 0;
+    }
+
+    public int getMovieId(String title, String year) {
+        String query = "SELECT * FROM " + TABLE_MOVIE +
+                " WHERE " + TITLE + " = '" + title.replace("'", "''") + "'" +
+                " AND " + RELEASE_DATE + " = '" + year + "'";
+        Cursor cursor = null;
+
+        try {
+            cursor = database.rawQuery(query, null);
+            cursor.moveToFirst();
+        } catch (Exception e) {
+            Log.e(MovieHelper.class.getSimpleName(), e.toString());
+        }
+
+        if (cursor != null)
+            cursor.close();
+
+        return cursor != null ? cursor.getColumnIndexOrThrow(_ID) : 0;
+    }
+
+    public Cursor queryAll() {
+        return database.query(DATABASE_TABLE,
+                null,
+                null,
+                null,
+                null,
+                null,
+                _ID + " DESC");
+    }
+
+    public Cursor queryById(String id) {
+        return database.query(DATABASE_TABLE, null,
+                _ID + " = ?",
+                new String[]{id},
+                null,
+                null,
+                null,
+                null);
+    }
+
+    public long insert(ContentValues values) {
+        return database.insert(DATABASE_TABLE, null, values);
+    }
+
+    public int update(String id, ContentValues values) {
+        return database.update(DATABASE_TABLE, values, _ID + " = ?", new String[]{id});
+    }
+
+    public int deleteById(String id) {
+        return database.delete(DATABASE_TABLE, _ID + " = ?", new String[]{id});
     }
 
     public long insertMovie(Movie movie) {
