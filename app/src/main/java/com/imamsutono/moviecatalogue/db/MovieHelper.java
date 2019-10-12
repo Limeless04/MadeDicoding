@@ -103,12 +103,12 @@ public class MovieHelper {
             Log.e(MovieHelper.class.getSimpleName(), e.toString());
         }
 
-        int id = cursor.getColumnIndexOrThrow(_ID);
+//        int id = cursor.getColumnIndexOrThrow(_ID);
 
         if (cursor != null)
             cursor.close();
 
-        return cursor != null ? cursor.getCount() : 0;
+        return cursor.getCount();
     }
 
     public int getMovieId(String title, String year) {

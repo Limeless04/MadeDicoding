@@ -30,6 +30,7 @@ import com.imamsutono.moviecatalogue.model.Movie;
 import com.imamsutono.moviecatalogue.model.MovieResponse;
 import com.imamsutono.moviecatalogue.model.TvShow;
 import com.imamsutono.moviecatalogue.model.TvShowResponse;
+import com.imamsutono.moviecatalogue.ui.reminder.SettingReminderActivity;
 import com.imamsutono.moviecatalogue.viewmodel.MainViewModel;
 
 import java.util.ArrayList;
@@ -84,19 +85,7 @@ public class MainFragment extends Fragment {
                 intent.setAction(Settings.ACTION_LOCALE_SETTINGS);
                 break;
             case R.id.notification_settings:
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, getContext().getPackageName());
-                    Toast.makeText(getContext(), getContext().getPackageName(), Toast.LENGTH_SHORT).show();
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
-                    intent.putExtra("app_package", getContext().getPackageName());
-                    intent.putExtra("app_uid", getContext().getApplicationInfo().uid);
-                } else {
-                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.setData(Uri.parse("package:" + getContext().getPackageName()));
-                }
+                intent = new Intent(getContext(), SettingReminderActivity.class);
                 break;
         }
 

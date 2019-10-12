@@ -50,6 +50,7 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
                 e.printStackTrace();
             }
         }
+
     }
 
     @Override
@@ -78,7 +79,7 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public RemoteViews getLoadingView() {
-        return null;
+        return new RemoteViews(mContext.getPackageName(), R.id.progress_widget);
     }
 
     @Override
