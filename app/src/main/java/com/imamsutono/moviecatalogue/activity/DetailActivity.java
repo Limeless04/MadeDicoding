@@ -157,11 +157,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     protected void onDestroy() {
         super.onDestroy();
 
-        if (type.equals("movie")) {
-            movieHelper.close();
-        } else {
+        if (type.equals("tv_show")) {
             tvShowHelper.close();
         }
+        /*else {
+            movieHelper.close();
+        }*/
     }
 
     private void getMovieDetail() {

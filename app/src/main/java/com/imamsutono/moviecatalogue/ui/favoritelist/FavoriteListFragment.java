@@ -60,6 +60,7 @@ public class FavoriteListFragment extends Fragment implements LoadFavoritesCallb
 
         if (args != null) {
             type = args.getString(ARG_OBJECT);
+            openDatabase();
 
             if (type != null) {
                 if (type.equals(TYPE_MOVIES)) {
@@ -83,7 +84,6 @@ public class FavoriteListFragment extends Fragment implements LoadFavoritesCallb
                         }
                     });
                 }
-                openDatabase();
             }
         }
 

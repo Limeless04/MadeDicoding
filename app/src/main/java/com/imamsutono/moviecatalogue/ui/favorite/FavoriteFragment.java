@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import com.google.android.material.tabs.TabLayout;
 import com.imamsutono.moviecatalogue.R;
 import com.imamsutono.moviecatalogue.adapter.PagerAdapter;
+import com.imamsutono.moviecatalogue.ui.reminder.SettingReminderActivity;
 
 import java.util.Objects;
 
@@ -50,11 +51,18 @@ public class FavoriteFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_change_settings) {
-            Intent mIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
-            startActivity(mIntent);
+        Intent intent = new Intent();
+
+        switch (item.getItemId()) {
+            case R.id.action_change_settings:
+                intent.setAction(Settings.ACTION_LOCALE_SETTINGS);
+                break;
+            case R.id.notification_settings:
+                intent = new Intent(getContext(), SettingReminderActivity.class);
+                break;
         }
 
+        startActivity(intent);
         return super.onOptionsItemSelected(item);
     }
 }
