@@ -17,4 +17,12 @@
     <string name="notif_sub_text">Yang baru menunggu</string>
     <string name="empty_text">TIDAK ADA DATA</string>
     <string name="widget_image">gambar widget</string>
+    <string name="daily_reminder">Pengingat Harian</string>
+    <string name="daily_reminder_description">Pengingat untuk kembali ke aplikasi</string>
+    <string name="release_reminder">Pengingat Peluncuran</string>
+    <string name="txt_release_description">Pengingat yang menampilkan film yang diluncurkan hari ini</string>
+    <string name="reminder_setting">Pengaturan Pengingat</string>
+    <string name="daily_reminder_active">Pengingat harian diaktifkan</string>
+    <string name="reminder_canceled">Pengingat dibatalkan</string>
+    <string name="release_reminder_active">Pengingat peluncuran diaktifkan</string>
 </resources>

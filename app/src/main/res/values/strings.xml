@@ -16,4 +16,12 @@
     <string name="notif_sub_text">The new one is waiting</string>
     <string name="empty_text">NO DATA</string>
     <string name="widget_image">widget image</string>
+    <string name="daily_reminder">Daily Reminder</string>
+    <string name="daily_reminder_description">Reminder for return to app</string>
+    <string name="release_reminder">Release Reminder</string>
+    <string name="txt_release_description">Reminder showing the movie that released today</string>
+    <string name="reminder_setting">Reminder Setting</string>
+    <string name="daily_reminder_active">Daily reminders are activated</string>
+    <string name="reminder_canceled">Reminder canceled</string>
+    <string name="release_reminder_active">Release reminders are activated</string>
 </resources>
