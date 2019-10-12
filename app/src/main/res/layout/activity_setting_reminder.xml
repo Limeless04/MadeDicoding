@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".ui.reminder.SettingReminderActivity">
+
+    <TextView
+        android:id="@+id/txt_daily_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/daily_reminder"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_daily_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_daily_reminder"
+        android:text="@string/daily_reminder_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_daily_reminder" />
+
+    <Switch
+        android:id="@+id/switch_daily"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/txt_daily_reminder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_daily_reminder" />
+
+    <TextView
+        android:id="@+id/txt_release_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/release_reminder"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_daily_description" />
+
+    <TextView
+        android:id="@+id/txt_release_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_release_reminder"
+        android:text="@string/txt_release_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_release_reminder" />
+
+    <Switch
+        android:id="@+id/switch_release"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/txt_daily_reminder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_release_reminder" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
