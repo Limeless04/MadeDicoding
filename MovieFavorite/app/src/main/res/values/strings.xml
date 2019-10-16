@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Movie Favorite</string>
+    <string name="poster_movie_catalogue">Poster Movie Catalogue</string>
+    <string name="release_on">Release On</string>
+    <string name="score">score</string>
+    <string name="voters">Voters</string>
+</resources>
