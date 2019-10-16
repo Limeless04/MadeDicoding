@@ -11,6 +11,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.imamsutono.moviecatalogue.fragment.MainFragment;
 import com.imamsutono.moviecatalogue.model.Movie;
 import com.imamsutono.moviecatalogue.model.MovieResponse;
 import com.imamsutono.moviecatalogue.ui.favorite.FavoriteFragment;
+import com.imamsutono.moviecatalogue.ui.reminder.SettingReminderActivity;
 import com.imamsutono.moviecatalogue.ui.search.SearchFragment;
 
 import java.text.SimpleDateFormat;
@@ -65,7 +67,11 @@ public class MainActivity extends AppCompatActivity {
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 8);
 
-        if (alarmManager != null && !isReleaseReminderSet(context)) {
+        final SharedPreferences releasePref = context.getSharedPreferences(
+                SettingReminderActivity.DAILY_PREFERENCE, Context.MODE_PRIVATE
+        );
+
+        if (alarmManager != null && !releasePref.getBoolean(SettingReminderActivity.DAILY_PREFERENCE, false)) {
             for (int i = 0; i < todayReleaseMovie.size(); i++) {
                 Intent intent = new Intent(context, NotificationReceiver.class);
                 intent.setAction(todayReleaseMovie.get(i).getTitle());
@@ -81,24 +87,12 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(context, R.string.release_reminder_active, Toast.LENGTH_SHORT).show();
     }
 
-    public boolean isReleaseReminderSet(Context context) {
-        if (todayReleaseMovie.size() > 0) {
-            return (PendingIntent.getBroadcast(context,
-                    NotificationReceiver.ID_RELEASE_REMINDER,
-                    new Intent(todayReleaseMovie.get(0).getTitle()),
-                    PendingIntent.FLAG_NO_CREATE) != null);
-        } else {
-            return false;
-        }
-    }
-
     private Observer<MovieResponse> getTodayReleaseMovie = new Observer<MovieResponse>() {
         @Override
         public void onChanged(MovieResponse movieResponse) {
             if (movieResponse != null) {
                 List<Movie> movies = movieResponse.getMovies();
                 todayReleaseMovie.addAll(movies);
-//                setupReleaseTodayReminder();
             } else {
                 Toast.makeText(getApplicationContext(), "Gagal mengambil data rilis hari ini", Toast.LENGTH_SHORT).show();
             }

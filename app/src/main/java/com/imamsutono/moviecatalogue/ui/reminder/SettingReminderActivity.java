@@ -4,10 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.PendingIntent;
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -19,6 +18,8 @@ import com.imamsutono.moviecatalogue.ui.main.MainActivity;
 public class SettingReminderActivity extends AppCompatActivity {
 
     private NotificationReceiver notificationReceiver;
+    public static final String DAILY_PREFERENCE = "dailyPreference";
+    private final String RELEASE_PREFERENCE = "releasePreference";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +33,12 @@ public class SettingReminderActivity extends AppCompatActivity {
         }
 
         notificationReceiver = new NotificationReceiver();
-
+        final SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                DAILY_PREFERENCE, Context.MODE_PRIVATE
+        );
         Switch dailySwitch = findViewById(R.id.switch_daily);
-        boolean dailyReminderIsSet = (PendingIntent.getBroadcast(getApplicationContext(),
-                NotificationReceiver.ID_DAILY_REMINDER,
-                new Intent(NotificationReceiver.DAILY_REMINDER),
-                PendingIntent.FLAG_NO_CREATE) != null);
 
-        if (dailyReminderIsSet)
+        if (sharedPref.getBoolean(DAILY_PREFERENCE, false))
             dailySwitch.setChecked(true);
 
         dailySwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
@@ -47,16 +46,21 @@ public class SettingReminderActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     notificationReceiver.setupDailyReminder(getApplicationContext());
+                    sharedPref.edit().putBoolean(DAILY_PREFERENCE, true).apply();
                 } else {
                     notificationReceiver.cancelReminder(getApplicationContext(), NotificationReceiver.DAILY_REMINDER);
+                    sharedPref.edit().putBoolean(DAILY_PREFERENCE, false).apply();
                 }
             }
         });
 
+        final SharedPreferences releasePref = getApplicationContext().getSharedPreferences(
+                RELEASE_PREFERENCE, Context.MODE_PRIVATE
+        );
         Switch releaseSwitch = findViewById(R.id.switch_release);
         final MainActivity mainActivity = new MainActivity();
 
-        if (mainActivity.isReleaseReminderSet(getApplicationContext()))
+        if (releasePref.getBoolean(RELEASE_PREFERENCE, false))
             releaseSwitch.setChecked(true);
 
         releaseSwitch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
@@ -64,8 +68,10 @@ public class SettingReminderActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     mainActivity.setupReleaseTodayReminder(getApplicationContext());
+                    releasePref.edit().putBoolean(RELEASE_PREFERENCE, true).apply();
                 } else {
                     notificationReceiver.cancelReminder(getApplicationContext(), NotificationReceiver.RELEASE_REMINDER);
+                    releasePref.edit().putBoolean(RELEASE_PREFERENCE, false).apply();
                 }
             }
         });
