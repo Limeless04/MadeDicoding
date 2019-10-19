@@ -15,7 +15,7 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<TvShowResponse> tvShowData;
     private MovieRepository movieRepository = MovieRepository.getInstance();
 
-    public void init(String date) {
+    void init(String date) {
         if (movieData == null) {
             movieData = movieRepository.getMovies();
         }
@@ -36,9 +36,5 @@ public class MainViewModel extends ViewModel {
 
     LiveData<MovieResponse> getTodayReleaseMovie() {
         return todayReleaseMovie;
-    }
-
-    public LiveData<TvShowResponse> getTvShows() {
-        return tvShowData;
     }
 }

@@ -1,19 +1,24 @@
 package com.imamsutono.moviecatalogue.ui.reminder;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.imamsutono.moviecatalogue.NotificationReceiver;
 import com.imamsutono.moviecatalogue.R;
-import com.imamsutono.moviecatalogue.ui.main.MainActivity;
+
+import java.util.Calendar;
 
 public class SettingReminderActivity extends AppCompatActivity {
 
@@ -58,7 +63,6 @@ public class SettingReminderActivity extends AppCompatActivity {
                 RELEASE_PREFERENCE, Context.MODE_PRIVATE
         );
         Switch releaseSwitch = findViewById(R.id.switch_release);
-        final MainActivity mainActivity = new MainActivity();
 
         if (releasePref.getBoolean(RELEASE_PREFERENCE, false))
             releaseSwitch.setChecked(true);
@@ -67,7 +71,7 @@ public class SettingReminderActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    mainActivity.setupReleaseTodayReminder(getApplicationContext());
+                    setupReleaseTodayReminder(getApplicationContext());
                     releasePref.edit().putBoolean(RELEASE_PREFERENCE, true).apply();
                 } else {
                     notificationReceiver.cancelReminder(getApplicationContext(), NotificationReceiver.RELEASE_REMINDER);
@@ -84,5 +88,30 @@ public class SettingReminderActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setupReleaseTodayReminder(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 16);
+        calendar.set(Calendar.MINUTE, 13);
+
+        final SharedPreferences releasePref = context.getSharedPreferences(
+                RELEASE_PREFERENCE, Context.MODE_PRIVATE
+        );
+
+        if (alarmManager != null && !releasePref.getBoolean(RELEASE_PREFERENCE, false)) {
+            Intent intent = new Intent(context, NotificationReceiver.class);
+            intent.setAction(NotificationReceiver.RELEASE_REMINDER);
+            intent.putExtra(NotificationReceiver.EXTRA_MOVIE_ID, 0);
+
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                    NotificationReceiver.ID_RELEASE_REMINDER, intent, 0);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, alarmIntent);
+        }
+
+        Toast.makeText(context, R.string.release_reminder_active, Toast.LENGTH_SHORT).show();
     }
 }

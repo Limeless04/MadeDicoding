@@ -9,11 +9,26 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.imamsutono.moviecatalogue.model.Movie;
+import com.imamsutono.moviecatalogue.model.MovieResponse;
+import com.imamsutono.moviecatalogue.service.ServiceGenerator;
+import com.imamsutono.moviecatalogue.service.ServiceInterface;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NotificationReceiver extends BroadcastReceiver {
     public static String CHANNEL_ID = "channel_01";
@@ -22,12 +37,15 @@ public class NotificationReceiver extends BroadcastReceiver {
     public static final String DAILY_REMINDER = "daily_reminder";
     public static final String RELEASE_REMINDER = "release_reminder";
     public static final String EXTRA_MOVIE_ID = "extra_movie_id";
-    public static final int ID_DAILY_REMINDER = 100;
+    public static final int ID_DAILY_REMINDER = 0;
     public static final int ID_RELEASE_REMINDER = 100;
 
     private String title = "";
     private String content = "";
     private String subText = "";
+
+    private ServiceInterface service = ServiceGenerator.createService(ServiceInterface.class);
+    private Call<MovieResponse> callMovie;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -36,12 +54,35 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (DAILY_REMINDER.equals(intent.getAction())) {
             title = context.getResources().getString(R.string.notif_daily_title);
             content = context.getResources().getString(R.string.notif_daily_content);
+            showNotification(context, ID_DAILY_REMINDER);
         } else {
-            title = intent.getAction() + " is released today";
-            content = intent.getAction() + " now available in Movie Catalogue";
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            String now = dateFormat.format(new Date());
+            callMovie = service.getTodayReleaseMovie(now, now);
+            getTodayReleaseMovie(context);
         }
+    }
 
-        showNotification(context, intent);
+    private void getTodayReleaseMovie(final Context context) {
+        callMovie.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
+                if (response.body() != null) {
+                    List<Movie> movies = response.body().getMovies();
+
+                    for (int i = 0; i < movies.size(); i++) {
+                        title = movies.get(i).getTitle() + " is released today";
+                        content = movies.get(i).getTitle() + " now available in Movie Catalogue";
+                        showNotification(context, i);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {
+                Log.e(NotificationReceiver.class.getSimpleName(), "Gagal mengambil data rilis hari ini");
+            }
+        });
     }
 
     public void setupDailyReminder(Context context) {
@@ -77,7 +118,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         Toast.makeText(context, R.string.reminder_canceled, Toast.LENGTH_SHORT).show();
     }
 
-    private void showNotification(Context context, Intent intent) {
+    private void showNotification(Context context, int id) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_movie_black_24dp)
@@ -98,11 +139,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         Notification notification = builder.build();
 
         if (notificationManager != null) {
-            if (DAILY_REMINDER.equals(intent.getAction())) {
-                notificationManager.notify(ID_DAILY_REMINDER, notification);
-            } else {
-                notificationManager.notify(intent.getIntExtra(EXTRA_MOVIE_ID, 1), notification);
-            }
+            notificationManager.notify(id, notification);
         }
     }
 }
