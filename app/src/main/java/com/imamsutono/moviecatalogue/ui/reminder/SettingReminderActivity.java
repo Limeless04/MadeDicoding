@@ -94,8 +94,8 @@ public class SettingReminderActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 16);
-        calendar.set(Calendar.MINUTE, 13);
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+        calendar.set(Calendar.MINUTE, 0);
 
         final SharedPreferences releasePref = context.getSharedPreferences(
                 RELEASE_PREFERENCE, Context.MODE_PRIVATE
